@@ -1,16 +1,15 @@
-name: Deploy Wiki
+name: Build and Deploy Wiki
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -23,13 +22,7 @@ jobs:
       - name: Build Docusaurus site
         run: npm run build
 
-      - name: Deploy to server via rsync
-        uses: burnett01/rsync-deployments@6.0.0
-        with:
-          switches: -avz --delete
-          path: build/
-          remote_path: ${{ secrets.DEPLOY_PATH }}
-          remote_host: ${{ secrets.DEPLOY_HOST }}
-          remote_user: ${{ secrets.DEPLOY_USER }}
-          remote_key: ${{ secrets.SSH_KEY }}
-
+      - name: Deploy build to Nginx webroot
+        run: |
+          rm -rf /var/www/wiki/*
+          cp -r build/* /var/www/wiki/
