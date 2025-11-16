@@ -285,10 +285,6 @@ Error: Can't finalizeData
 */
 ```
 
-# Methods of Promise
-
-[Promise Methods](Asynchronous%20JavaScript/Promise%20Methods%20d67a40f8e5154e30bdfdd07cf1953cf1.md)
-
 # Problems with JS Promises
 
 - Chaining a lot of then() methods in a complex codebase makes it harder to debug although then() method helps us get out of callback hell.
