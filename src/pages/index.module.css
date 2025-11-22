@@ -3,12 +3,6 @@
  * and scoped locally.
  */
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
-}
-
 .buttons {
   display: flex;
   align-items: center;
@@ -22,4 +16,41 @@
   align-items: center;
   gap: 2rem;
   margin-top: 2rem;
+}
+
+.bookIllustration {
+  width: 300px;
+  height: auto;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+
+.textKnowledge, .textIs, .textCool {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.textKnowledge {
+  color: #ff2f78;
+}
+
+@media screen and (max-width: 996px) {
+  .wikiContainer {
+    flex-direction: column;
+  }
+
+  .titleContainer {
+    flex-direction: row;
+  }
+
+  .textKnowledge, .textIs, .textCool {
+    font-size: 2rem;;
+  }
 }
