@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request:
+    types: [opened, synchronize, reopened, closed]
 
 jobs:
   build-and-deploy:
@@ -23,7 +24,38 @@ jobs:
       - name: Build Docusaurus site
         run: npm run build
 
-      - name: Deploy build to Nginx webroot
+      # Production deploy
+      - name: Deploy production site
+        if: github.ref == 'refs/heads/main'
         run: |
           rm -rf /var/www/wiki/*
           cp -r build/* /var/www/wiki/
+
+      # PR Preview deploy
+      - name: Deploy PR preview
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        run: |
+          PREVIEW_DIR=/var/www/pr-previews/${{ github.event.pull_request.number }}
+          rm -rf $PREVIEW_DIR
+          mkdir -p $PREVIEW_DIR
+          cp -r build/* $PREVIEW_DIR/
+
+      - name: Comment PR with preview link
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            🚀 **Preview environment ready!**
+            URL: https://pr-${{ github.event.pull_request.number }}.wiki.adibhasib.dev
+
+      # Cleanup when PR is closed
+      - name: Cleanup PR preview
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        run: |
+          rm -rf /var/www/pr-previews/${{ github.event.pull_request.number }}
+
+      - name: Remove PR preview comment
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          delete: true
